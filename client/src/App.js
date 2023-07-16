@@ -5,11 +5,13 @@ import IndexPage from "./components/Pages/IndexPage";
 import LoginPage from "./components/Pages/LoginPage";
 import Registerpage from "./components/Pages/RegisterPage";
 
+
+// TODO: state has to be stored in App.js, useContext
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route index element={<IndexPage />} />
+        <Route  index element={<IndexPage />} />
         <Route path={"/login"} element={<LoginPage />} />
         <Route path={"/register"} element={<Registerpage />} />
       </Route>
