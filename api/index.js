@@ -14,6 +14,8 @@ const db = "mongodb+srv://vidalnico:Jo5F825Xg5ncByt5@cluster0.hezktnh.mongodb.ne
 const salt = bcrypt.genSaltSync(10);
 const secret = bcrypt.genSaltSync(5);
 
+// try
+
 // app.use -> function adds a new middleware to the app. Essentially, whenever a request hits 
 // your backend, Express will execute the functions you passed to app.use()
 
