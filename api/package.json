@@ -1,7 +1,6 @@
 {
-	"proxy": "http://localhost:4000",
-  "home": ".",
-	"dependencies": {
-		"express": "^4.18.2"
-	}
+	"home": ".",
+		"dependencies": {
+			"express": "^4.18.2"
+		}
 }

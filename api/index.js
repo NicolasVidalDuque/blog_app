@@ -12,9 +12,7 @@ const app = express();
 const db = "mongodb+srv://vidalnico:Jo5F825Xg5ncByt5@cluster0.hezktnh.mongodb.net/?retryWrites=true&w=majority";
 
 const salt = bcrypt.genSaltSync(10);
-const secret = bcrypt.genSaltSync(5);
-
-// try
+const secret = "secretKey";
 
 // app.use -> function adds a new middleware to the app. Essentially, whenever a request hits 
 // your backend, Express will execute the functions you passed to app.use()
@@ -34,13 +32,6 @@ app.use(cookieParser());
 
 mongoose.connect(db);
 
-
-// Code to enable js to run (error on response: Enable js to run this app )
-app.use(express.static(__dirname));
-
-app.get("/*", function (req, res) {
-	res.sendFile(path.join(__dirname, "index.html"));
-});
 
 app.post('/register', async (req, res) =>{
     const {username, password} = req.body;
@@ -63,9 +54,15 @@ app.post('/login', async (req, res) => {
     }
     const passOk = bcrypt.compareSync(password, userDoc.password);
     if(passOk){
+        // .sign generates a json web token based on the secret key.
+        // This token has the username and the user_id
+        // Then is placed into the response cookie
+        // This cookie will be stored in the browser session indicating a current valid login
         jwt.sign({username, id:userDoc._id}, secret, {}, (err, token) =>{
             if (err) throw err;
-            res.cookie('token', token).json('ok').status(200)
+            res.cookie('token', token).json({
+                id:userDoc._id, username
+            })
         });
     }else{
         res.status(400).json('wrong credentials');
@@ -74,8 +71,26 @@ app.post('/login', async (req, res) => {
 
 // Check if the current session is active&&valid
 app.get('/profile', (req, res) =>{
-    console.log('aoeu');
-    res.json("hello")
+    const {token} = req.cookies;
+    // Verifies a bunch of authentication and authorization stuff...
+    // Decrypts the token into its contents: user_id, user_name
+    // Appends the decrypted (with the secret key only in backend) content to the response
+    if(token !== '' && typeof token !== 'undefined' && token !== null){
+        jwt.verify(token, secret, {}, (err, info) => {
+            if (err) throw err;
+            res.json(info);
+        })
+    }else{
+        res.json({}).status(200);
+    }
+})
+
+app.post('/logout', (req, res) =>{
+    res.cookie('token', '').json('ok');
+})
+
+app.get('/test', (req, res) =>{
+    res.json("Connection ok").status(200);
 })
 
 app.listen(4000);
