@@ -5,6 +5,7 @@ const User = require('./models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 
 
 const app = express();
@@ -27,9 +28,17 @@ app.use(express.json());
 
 // Cookie-parser It allows you to conveniently parse and manipulate the 
 // cookie data sent by the client's browser to the server.
-// app.use(cookieParser);
+app.use(cookieParser());
 
 mongoose.connect(db);
+
+
+// Code to enable js to run (error on response: Enable js to run this app )
+app.use(express.static(__dirname));
+
+app.get("/*", function (req, res) {
+	res.sendFile(path.join(__dirname, "index.html"));
+});
 
 app.post('/register', async (req, res) =>{
     const {username, password} = req.body;
@@ -62,8 +71,9 @@ app.post('/login', async (req, res) => {
 })
 
 // Check if the current session is active&&valid
-app.get("/profile", (req, res) =>{
-    res.json(req.cookies);
+app.get('/profile', (req, res) =>{
+    console.log('aoeu');
+    res.json("hello")
 })
 
 app.listen(4000);

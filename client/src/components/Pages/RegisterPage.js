@@ -5,14 +5,16 @@ export default function Registerpage(){
     const [password, setPassword ] = useState("");
     async function register(ev){
         ev.preventDefault();
-        const response = await fetch('http://localhost:4000/register',{
-            method: 'POST',
-            body: JSON.stringify({username, password}),
-            headers: {'Content-Type': "application/json"}
-        })
-        alert(`Regstration ${
-            response.status === 200 ? "Succesfull" : "Failed" 
-        }`);
+        if(password !== '' && username !== ''){
+            const response = await fetch('http://localhost:4000/register',{
+                method: 'POST',
+                body: JSON.stringify({username, password}),
+                headers: {'Content-Type': "application/json"}
+            })
+            alert(`Regstration ${
+                response.status === 200 ? "Succesfull" : "Failed" 
+            }`);
+        }
     }
 
     // TODO: implement useContex to manage state from app
