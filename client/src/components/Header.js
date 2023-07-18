@@ -35,7 +35,7 @@ export default function Header() {
 				{username ? (
 						<>
 							<Link className='header-text' to="/create">Create new post</Link>
-							<a href='' className='header-text' onClick={logout}>Logout</a>
+							<a className='header-text' onClick={logout}>Logout</a>
 						</>
 					) : (
 						<>
