@@ -41,7 +41,7 @@ export default function CreatePost(){
 			method: "POST",
 			body: data
 		});
-        console.log(await response.json())
+        console.log(await response.json());
     }
 
     return (
