@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { UserContex } from "../context/UserContext";
 
@@ -34,13 +34,13 @@ export default function Header() {
 			<nav>
 				{username ? (
 						<>
-							<Link to="/create">Create new post</Link>
-							<a onClick={logout}>Logout</a>
+							<Link className='header-text' to="/create">Create new post</Link>
+							<a href='' className='header-text' onClick={logout}>Logout</a>
 						</>
 					) : (
 						<>
-							<Link to="/login">Login</Link>
-							<Link to="/register">Register</Link>
+							<Link className='header-text' to="/login">Login</Link>
+							<Link className='header-text' to="/register">Register</Link>
 						</>
 					)
 				}

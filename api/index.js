@@ -6,6 +6,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const path = require('path');
+const multer = require('multer');
+const uploadMiddleware = multer({ dest: 'uploads/'})
+
 
 
 const app = express();
@@ -87,6 +90,12 @@ app.get('/profile', (req, res) =>{
 
 app.post('/logout', (req, res) =>{
     res.cookie('token', '').json('ok');
+})
+
+// To handle multiple files, use upload.array. For a single file, use upload.single.
+// Note that the files argument depends on the name of the input specified in formData.
+app.post('/post',uploadMiddleware.single('file'), (req, res) => {
+    res.json({files:req.file});
 })
 
 app.get('/test', (req, res) =>{
