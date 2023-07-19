@@ -34,7 +34,8 @@ export default function CreatePost(){
 
     async function createNewPost(ev){
         ev.preventDefault();
-        if(title.length < 1 || summary.length < 1 || content.length < 1){
+        if(title.length < 1 || summary.length < 1 || content.length < 1 || files.length < 1){
+            alert("Title, Summary, Image and Content are required")
             return
         }
         const data = new FormData();

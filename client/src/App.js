@@ -6,7 +6,9 @@ import LoginPage from "./components/Pages/LoginPage";
 import Registerpage from "./components/Pages/RegisterPage";
 import {UserContexProvider} from "./context/UserContext";
 import CreatePost from "./components/Pages/CreatePost";
+import PostPage from "./components/Pages/PostPage";
 
+// 2:52:18
 
 // TODO: state has to be stored in App.js, useContext
 function App() {
@@ -18,6 +20,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<Registerpage />} />
             <Route path="/create" element={<CreatePost />} />
+            <Route path="/post/:id" element={<PostPage />} />
         </Route>
       </Routes>
     </UserContexProvider>

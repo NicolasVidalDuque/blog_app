@@ -1,9 +1,11 @@
-export default function Post({title, summary, cover, content, createdAt, author}){
+
+export default function Post(props){
+    const {_id, title, summary, cover, content, createdAt, author} = props.post;
     return (
-        <div className="post">
+        <div className="post" onClick={() => props.redirect(_id)}>
             <div className="image">
                 <img
-                src="https://th.bing.com/th/id/OIP.rvSWtRd_oPRTwDoTCmkP5gAAAA?pid=ImgDet&rs=1"
+                src={'http://localhost:4000/'+cover}
                 alt={title}
                 />
             </div>

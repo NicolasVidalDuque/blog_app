@@ -6,12 +6,9 @@ const Post = require('./models/Post');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
-const path = require('path');
 const multer = require('multer');
 const uploadMiddleware = multer({ dest: 'uploads/'})
 const fs = require('fs');
-
-
 
 const app = express();
 const db = "mongodb+srv://vidalnico:Jo5F825Xg5ncByt5@cluster0.hezktnh.mongodb.net/?retryWrites=true&w=majority";
@@ -34,6 +31,8 @@ app.use(express.json());
 // Cookie-parser It allows you to conveniently parse and manipulate the 
 // cookie data sent by the client's browser to the server.
 app.use(cookieParser());
+
+app.use('/uploads', express.static(__dirname + '/uploads'));
 
 mongoose.connect(db);
 
@@ -97,6 +96,7 @@ app.post('/logout', (req, res) =>{
     res.cookie('token', '').json('ok');
 });
 
+// Save post info in db and image in server
 // To handle multiple files, use upload.array. For a single file, use upload.single.
 // Note that the files argument depends on the name of the input specified in formData.
 app.post('/post',uploadMiddleware.single('file'), async (req, res) => {
@@ -105,28 +105,36 @@ app.post('/post',uploadMiddleware.single('file'), async (req, res) => {
     const ext = parts[parts.length -1];
     const newPath = path+'.'+ext;
     fs.renameSync(path, newPath);
-
     const { token } = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
-        if (err) throw err;        
-        const {title, summary, content} = req.body;
-        // await Post.create({
-        //     title,
-        //     summary,
-        //     content,
-        //     author:info.id,
-        //     cover:newPath
-        // })
-        res.status(200);
-    });
+		if (err) throw err;
+		const { title, summary, content } = req.body;
+		await Post.create({
+		    title,
+		    summary,
+		    content,
+		    author:info.id,
+		    cover:newPath
+		})
+		res.json('ok').status(200);
+	});
 
 });
 
+// find all posts in db
 app.get('/post', async (req, res)=>{
-    res.json(await Post.find() // find all posts in db
+    res.json(await Post.find() 
                         .populate('author', ['username']) // go look for the author-user by the reference and add the username & id to the "author" field in the object array
-            ).status(200);
+                        .sort({createdAt: -1})
+                        .limit(20)
+                        ).status(200);
 });
+
+app.get('/post/:id', async (req, res) => {
+    const {id} = req.params;
+    const postDoc = await Post.findById(id).populate('author', ['username']);
+    res.json(postDoc).status(200)
+})
 
 app.get('/test', (req, res) =>{
     res.json("Connection ok").status(200);
