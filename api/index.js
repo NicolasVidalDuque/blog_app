@@ -2,12 +2,14 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const User = require('./models/User');
+const Post = require('./models/Post');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const multer = require('multer');
 const uploadMiddleware = multer({ dest: 'uploads/'})
+const fs = require('fs');
 
 
 
@@ -63,14 +65,17 @@ app.post('/login', async (req, res) => {
         // This cookie will be stored in the browser session indicating a current valid login
         jwt.sign({username, id:userDoc._id}, secret, {}, (err, token) =>{
             if (err) throw err;
-            res.cookie('token', token).json({
-                id:userDoc._id, username
-            })
+            res.cookie("token", token, {
+				expires: new Date(Date.now() + 1 * 3600 * 1000),
+			}).json({
+				id: userDoc._id,
+				username,
+			});
         });
     }else{
         res.status(400).json('wrong credentials');
     }
-})
+});
 
 // Check if the current session is active&&valid
 app.get('/profile', (req, res) =>{
@@ -82,24 +87,49 @@ app.get('/profile', (req, res) =>{
         jwt.verify(token, secret, {}, (err, info) => {
             if (err) throw err;
             res.json(info);
-        })
+        });
     }else{
         res.json({}).status(200);
     }
-})
+});
 
 app.post('/logout', (req, res) =>{
     res.cookie('token', '').json('ok');
-})
+});
 
 // To handle multiple files, use upload.array. For a single file, use upload.single.
 // Note that the files argument depends on the name of the input specified in formData.
-app.post('/post',uploadMiddleware.single('file'), (req, res) => {
-    res.json({files:req.file});
-})
+app.post('/post',uploadMiddleware.single('file'), async (req, res) => {
+    const {originalname, path} = req.file;
+    const parts = originalname.split('.');
+    const ext = parts[parts.length -1];
+    const newPath = path+'.'+ext;
+    fs.renameSync(path, newPath);
+
+    const { token } = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if (err) throw err;        
+        const {title, summary, content} = req.body;
+        // await Post.create({
+        //     title,
+        //     summary,
+        //     content,
+        //     author:info.id,
+        //     cover:newPath
+        // })
+        res.status(200);
+    });
+
+});
+
+app.get('/post', async (req, res)=>{
+    res.json(await Post.find() // find all posts in db
+                        .populate('author', ['username']) // go look for the author-user by the reference and add the username & id to the "author" field in the object array
+            ).status(200);
+});
 
 app.get('/test', (req, res) =>{
     res.json("Connection ok").status(200);
-})
+});
 
 app.listen(4000);

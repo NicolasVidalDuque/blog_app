@@ -119,6 +119,7 @@ button:hover {
 
 .ql-container {
   min-height: 20rem;
+  max-height: 50vh;
   height: 100%;
   flex: 1;
   display: flex;
