@@ -2,28 +2,7 @@ import { useState } from "react";
 import ReactQuill from "react-quill";
 import 'react-quill/dist/quill.snow.css';
 import { Navigate } from "react-router-dom";
-
-const modules = {
-    toolbar:  [
-        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-        ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-        ['link', 'image'],
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-        [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
-
-        [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-        [{ 'align': [] }],
-
-        ['clean']                                         // remove formatting button
-    ]
-};
-
-const formats = [
-    'header',
-    'bold', 'italic', 'underline', 'strike', 'blockquote',
-    'link', 'bullet', 'indent',
-    'link', 'image'];
-
+import Editor from "../Editor";
 
 export default function CreatePost(){
     const [title, setTitle] = useState('');
@@ -61,7 +40,7 @@ export default function CreatePost(){
     }
 
     return (
-		<form id="create-form">
+		<form id="create-form" onSubmit={createNewPost}>
 			<input
 				type="title"
 				placeholder="Title"
@@ -80,16 +59,10 @@ export default function CreatePost(){
 				type="file"
                 onChange={ev => setFiles(ev.target.files)}
             />
-			<ReactQuill
-				value={content}
-				modules={modules}
-                formats={formats}
-				onChange={(newValue) => setContent(newValue)}
-			/>
+			<Editor value={content} onChange={setContent} />
 			<button
 				style={{ marginTop: "10px" }}
-				type="submit"
-                onClick={createNewPost}>
+				type="submit">
 				Create post
 			</button>
 		</form>

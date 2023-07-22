@@ -61,6 +61,7 @@ div.post div.image {
 }
 
 div.post img{
+  max-width: 300px;
   height: 80%;
   object-fit: contain;
 }
@@ -165,12 +166,70 @@ form#create-form input#input-file{
   margin-top: 0;
 }
 
-div.image{
+div.post-page div.image{
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-div.image img.image{
-  max-height: 600px;
+div.post-page div.image{
+  max-height: 300px;
+  overflow: hidden;
+}
+
+div.post-page div.image img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+div.post-page time{
+  font-size: small;
+  color: #888;
+}
+
+div.post-page h1{
+  margin-bottom: 0;
+}
+
+div.post-page div.author{
+  font-size: small;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+div.post-page div.center-elements{
+  text-align: center;
+}
+
+div.edit-row{
+  margin: 20px 0;
+}
+
+div.post-page .edit-btn{
+  background-color: #333;
+  color: #fff;
+  padding: 5px; 
+  border-radius: 5px;
+  display: inline-flex;
+  gap: 5px;
+  text-decoration: none;
+}
+
+div.post-page svg{
+  height: 20px;
+}
+
+@media screen and (max-width: 768px) {
+  div.post {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  div.post img {
+    margin: 0 auto;
+    max-width: 100%;
+    height: 100%;
+    width: 90vw;
+  }
 }
