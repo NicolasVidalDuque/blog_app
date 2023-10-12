@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { UserContex } from "../context/UserContext";
-
+import { Navigate } from "react-router-dom"
 export default function Header() {
 	const {setUserInfo, userInfo} = useContext(UserContex);
 	useEffect(() => {
@@ -20,6 +20,8 @@ export default function Header() {
 			method: 'POST'
 		})
 		setUserInfo(null);
+    alert("Bye Bye...")
+    return <Navigate to={'/'} /> 
 	}
 
 	const username = userInfo?.username
@@ -29,7 +31,10 @@ export default function Header() {
 			<Link
 				to="/"
 				className="logo">
-				MyBlog
+				MyBlog <span style={
+            { fontWeight:'normal',
+              fontStyle:'italic'}
+          }> {username ? ('- ' + username) : ''} </span>
 			</Link>
 			<nav>
 				{username ? (
