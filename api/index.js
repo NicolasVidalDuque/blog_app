@@ -10,11 +10,12 @@ const multer = require('multer');
 const uploadMiddleware = multer({ dest: 'uploads/'})
 const fs = require('fs');
 
+require('dotenv').config();
 const app = express();
-const db = "mongodb+srv://vidalnico:Jo5F825Xg5ncByt5@cluster0.hezktnh.mongodb.net/?retryWrites=true&w=majority";
+const db = process.env.DB_CONNECTION; 
 
 const salt = bcrypt.genSaltSync(10);
-const secret = "secretKey";
+const secret = process.env.SECRET_KEY; 
 
 // app.use -> function adds a new middleware to the app. Essentially, whenever a request hits 
 // your backend, Express will execute the functions you passed to app.use()
