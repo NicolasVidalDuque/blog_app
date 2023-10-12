@@ -26,7 +26,7 @@ export default function CreatePost(){
         // Send to server for storage in db:
         //      form-data: title, content, summary, image
         //      credentials: cookies -> token -> user data
-        const response = await fetch("http://localhost:4000/post", {
+        const response = await fetch("http://myblog.onrender.com/post", {
 			method: "POST",
 			body: data,
             credentials: 'include'

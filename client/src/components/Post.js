@@ -5,7 +5,7 @@ export default function Post(props){
         <div className="post" onClick={() => props.redirect(_id)}>
             <div className="image">
                 <img
-                src={'http://localhost:4000/'+cover}
+                src={'http://myblog.onrender.com/'+cover}
                 alt={title}
                 />
             </div>

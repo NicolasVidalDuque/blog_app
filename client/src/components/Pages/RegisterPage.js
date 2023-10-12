@@ -6,7 +6,7 @@ export default function Registerpage(){
     async function register(ev){
         ev.preventDefault();
         if(password !== '' && username !== ''){
-            const response = await fetch('http://localhost:4000/register',{
+            const response = await fetch('http://myblog.onrender.com/register',{
                 method: 'POST',
                 body: JSON.stringify({username, password}),
                 headers: {'Content-Type': "application/json"}
