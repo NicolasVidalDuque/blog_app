@@ -1,11 +1,11 @@
-
+import {HOST} from "../host.js"
 export default function Post(props){
-    const {_id, title, summary, cover, content, createdAt, author} = props.post;
+    const {_id, title, summary, cover,  createdAt, author} = props.post;
     return (
         <div className="post" onClick={() => props.redirect(_id)}>
             <div className="image">
                 <img
-                src={'http://myblog.onrender.com/'+cover}
+                src={HOST + '/' + cover}
                 alt={title}
                 />
             </div>

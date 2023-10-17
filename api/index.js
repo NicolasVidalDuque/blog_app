@@ -23,7 +23,7 @@ const secret = process.env.SECRET_KEY;
 // Cross-Origin Resource Sharing (CORS) is an HTTP-header based mechanism that allows a server to
 // indicate any origins (domain, scheme, or port) other than its own from which a browser should
 // permit loading resources.
-app.use(cors({credentials:true, origin: process.env.HOST})); // if im using credentials i need to include the credentials  params
+app.use(cors({credentials:true, origin: true})); // if im using credentials i need to include the credentials  params
 
 // express.json() is a built in middleware function in Express starting from v4.16.0. 
 // It parses incoming JSON requests and puts the parsed data in req.body. 
@@ -154,7 +154,7 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
     }
 
     const { token } = req.cookies;
-	jwt.verify(token, secret, {}, async (err, info) => {
+    jwt.verify(token, secret, {}, async (err, info) => {
 		if (err) throw err;
         const {id, title, summary, content } = req.body;
         const postDoc = await Post.findById(id);
@@ -179,7 +179,7 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
 })
 
 app.get('/test', (req, res) =>{
-    res.json("Connection ok").status(200);
+    res.json(process.env.HOST).status(200);
 });
 
 app.listen(4000);

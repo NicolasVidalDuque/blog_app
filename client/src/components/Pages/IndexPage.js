@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom"
 import Post from "../Post";
+import { HOST } from "../../host.js"
 
 export default function IndexPage(){
     const [posts, setPosts] = useState([]);
     const [focusPost, setFocusPost] = useState(false);
     const [idRoute, setIdRoute] = useState('');
     const redirect = (_id) => {
-		setFocusPost(true);
-        setIdRoute(_id);
+		  setFocusPost(true);
+      setIdRoute(_id);
 	}
-    
+ 
     useEffect(() => {
-        fetch('http://myblog.onrender.com/post').then(response => {
+      fetch(HOST + '/post').then(response => {
             response.json().then(posts =>{
                 setPosts(posts);
             })

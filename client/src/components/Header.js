@@ -2,10 +2,11 @@ import { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { UserContex } from "../context/UserContext";
 import { Navigate } from "react-router-dom"
+import { HOST } from "../host.js"
 export default function Header() {
 	const {setUserInfo, userInfo} = useContext(UserContex);
 	useEffect(() => {
-		fetch("http://myblog.onrender.com/profile", {
+		fetch(HOST + "/profile", {
 			credentials: "include",
 		}).then(response => {
 			response.json().then(scopeUserInfo => {
@@ -15,7 +16,7 @@ export default function Header() {
 	}, []);
 
 	function logout(){
-		fetch('http://myblog.onrender.com/logout', {
+		fetch(HOST + '/logout', {
 			credentials: 'include',
 			method: 'POST'
 		})

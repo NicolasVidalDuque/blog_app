@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import { UserContex } from "../../context/UserContext";
-
+import { HOST } from "../../host.js"
 export default function PostPage(){
     // useParams() takes the params from the url.
     // These are defined on the Route (from App.js) by the "colon" -> :id
@@ -9,7 +9,7 @@ export default function PostPage(){
     const [postInfo, setPostInfo] = useState(null);
     const {userInfo} = useContext(UserContex);
     useEffect(() => {
-        fetch('http://myblog.onrender.com/post/'+id)
+        fetch(HOST + '/post/'+id)
             .then(response => {
                 response.json().then(postInfo => {
                     setPostInfo(postInfo);
@@ -47,7 +47,7 @@ export default function PostPage(){
 			<div className="image">
 				<img
 					className="image"
-					src={`http://myblog.onrender.com/${postInfo.cover}`}
+					src={HOST + '/' + postInfo.cover}
 				/>
 			</div>
 			<div dangerouslySetInnerHTML={{ __html: postInfo.content }} />

@@ -1,12 +1,12 @@
 import { useState } from "react";
-
+import { HOST } from "../../host.js"
 export default function Registerpage(){
     const [username, setUsername] = useState("");
     const [password, setPassword ] = useState("");
     async function register(ev){
         ev.preventDefault();
         if(password !== '' && username !== ''){
-            const response = await fetch('http://myblog.onrender.com/register',{
+            const response = await fetch(HOST + '/register',{
                 method: 'POST',
                 body: JSON.stringify({username, password}),
                 headers: {'Content-Type': "application/json"}

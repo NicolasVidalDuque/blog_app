@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Form, Navigate, useParams } from "react-router-dom";
 import Editor from "../Editor";
-
+import { HOST } from "../../host.js";
 export default function EditPost(){
     const [title, setTitle] = useState("");
     const [summary, setSummary] = useState("");
@@ -12,7 +12,7 @@ export default function EditPost(){
     const [cover, setCover] = useState('');
 
     useEffect(() => {
-        fetch('http://myblog.onrender.com/post/'+id)
+        fetch(HOST + '/post/'+id)
             .then(response => 
                 response.json().then(postInfo => {
                     setTitle(postInfo.title);
@@ -31,7 +31,7 @@ export default function EditPost(){
         if (files?.[0]){
             data.set('file', files?.[0]);
         }
-        await fetch('http://myblog.onrender.com/post', {
+        await fetch(HOST + '/post', {
             credentials: 'include',
             method: 'PUT',
             body: data

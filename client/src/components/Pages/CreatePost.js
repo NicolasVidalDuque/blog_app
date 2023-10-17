@@ -3,7 +3,7 @@ import ReactQuill from "react-quill";
 import 'react-quill/dist/quill.snow.css';
 import { Navigate } from "react-router-dom";
 import Editor from "../Editor";
-
+import { HOST } from "../../host.js";
 export default function CreatePost(){
     const [title, setTitle] = useState('');
     const [summary, setSummary] = useState('');
@@ -26,7 +26,7 @@ export default function CreatePost(){
         // Send to server for storage in db:
         //      form-data: title, content, summary, image
         //      credentials: cookies -> token -> user data
-        const response = await fetch("http://myblog.onrender.com/post", {
+        const response = await fetch(HOST + "/post", {
 			method: "POST",
 			body: data,
             credentials: 'include'
