@@ -23,13 +23,8 @@ const secret = process.env.SECRET_KEY;
 // Cross-Origin Resource Sharing (CORS) is an HTTP-header based mechanism that allows a server to
 // indicate any origins (domain, scheme, or port) other than its own from which a browser should
 // permit loading resources.
-app.use(cors({credentials:true, origin: process.env.HOST})); // if im using credentials i need to include the credentials  params
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  next();
-})
+//app.use(cors({credentials:true, origin: process.env.HOST})); // if im using credentials i need to include the credentials  params
+app.use(cors());
 
 // express.json() is a built in middleware function in Express starting from v4.16.0. 
 // It parses incoming JSON requests and puts the parsed data in req.body. 
