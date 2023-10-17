@@ -25,7 +25,7 @@ const secret = process.env.SECRET_KEY;
 // permit loading resources.
 app.use(cors({credentials:true, origin: process.env.HOST})); // if im using credentials i need to include the credentials  params
 app.use((req, res, next) => {
-  res.setHeader("Acces-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   next();
