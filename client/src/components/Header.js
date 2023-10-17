@@ -32,7 +32,7 @@ export default function Header() {
 			<Link
 				to="/"
 				className="logo">
-				MyBlog <span style={
+				NV - Blog <span style={
             { fontWeight:'normal',
               fontStyle:'italic'}
           }> {username ? ('- ' + username) : ''} </span>
