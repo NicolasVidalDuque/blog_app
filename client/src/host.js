@@ -1,1 +1,1 @@
-export const HOST = process.env.HOST;
+export const HOST = "https://nv-blog-client.onrender.com"
