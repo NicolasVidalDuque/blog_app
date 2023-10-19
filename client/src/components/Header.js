@@ -7,7 +7,7 @@ export default function Header() {
 	const {setUserInfo, userInfo} = useContext(UserContex);
 	useEffect(() => {
 		fetch(HOST + "/profile", {
-			credentials: "include",
+			credentials: 'include',
 		}).then(response => {
 			response.json().then(scopeUserInfo => {
 				setUserInfo(scopeUserInfo);
