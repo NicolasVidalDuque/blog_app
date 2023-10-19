@@ -25,10 +25,8 @@ const secret = process.env.SECRET_KEY;
 // permit loading resources.
 app.use(cors({
   credentials:true,
-  headers:["Content-Type"],
   origin: process.env.HOST
 })); // if im using credentials i need to include the credentials  params
-app.options('*', cors())
 // express.json() is a built in middleware function in Express starting from v4.16.0. 
 // It parses incoming JSON requests and puts the parsed data in req.body. 
 app.use(express.json());
