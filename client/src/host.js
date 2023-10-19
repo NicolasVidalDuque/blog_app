@@ -1,1 +1,1 @@
-export const HOST = "https://nv-blog-client.onrender.com"
+export const HOST = "https://nv-blog-api.onrender.com";
