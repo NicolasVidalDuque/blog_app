@@ -13,7 +13,7 @@ export default function IndexPage(){
 	}
  
     useEffect(() => {
-      fetch(HOST + '/post').then(response => {
+      fetch(HOST + '/allPost').then(response => {
             response.json().then(posts =>{
                 setPosts(posts);
             })

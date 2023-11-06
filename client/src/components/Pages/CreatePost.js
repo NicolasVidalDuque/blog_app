@@ -11,6 +11,19 @@ export default function CreatePost(){
     const [files, setFiles] = useState('');
     const [redirect, setRedirect] = useState(false);
 
+    function convert_to_base64(file){
+      return new Promise((resolve, reject) => {
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(file);
+        fileReader.onload = () => {
+          resolve(fileReader.result)
+        };
+        fileReader.onerror = (error) => {
+          reject(error);
+        };
+      })
+    }
+
     async function createNewPost(ev){
         ev.preventDefault();
         if(title.length < 1 || summary.length < 1 || content.length < 1 || files.length < 1){
@@ -21,7 +34,9 @@ export default function CreatePost(){
         data.set('title', title);
         data.set('summary', summary);
         data.set('content', content);
+        // Asume that file is allwais not null, verification in the pervious if
         data.set('file', files[0]);
+        console.log(files[0])
 
         // Send to server for storage in db:
         //      form-data: title, content, summary, image
@@ -38,7 +53,7 @@ export default function CreatePost(){
     if(redirect){
         return <Navigate to={'/'} />
     }
-
+    
     return (
 		<form id="create-form" onSubmit={createNewPost}>
 			<input

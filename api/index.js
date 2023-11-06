@@ -72,11 +72,11 @@ app.post('/login', async (req, res) => {
         jwt.sign({username, id:userDoc._id}, secret, {}, (err, token) =>{
             if (err) throw err;
             res.cookie("token", token, {
-				expires: new Date(Date.now() + 1 * 3600 * 1000),
-			}).json({
-				id: userDoc._id,
-				username,
-			});
+				      expires: new Date(Date.now() + 1 * 3600 * 1000),
+			      }).json({
+				      id: userDoc._id,
+				      username,
+			      });
         });
     }else{
         res.status(400).json('wrong credentials');
@@ -108,6 +108,7 @@ app.post('/logout', (req, res) =>{
 // Note that the files argument depends on the name of the input specified in formData.
 app.post('/post',uploadMiddleware.single('file'), async (req, res) => {
     const {originalname, path} = req.file;
+    console.log(originalname)
     const parts = originalname.split('.');
     const ext = parts[parts.length -1];
     const newPath = path+'.'+ext;
@@ -128,8 +129,7 @@ app.post('/post',uploadMiddleware.single('file'), async (req, res) => {
 
 });
 
-// find all posts in db
-app.get('/post', async (req, res)=>{
+app.get('/allPost', async (req, res)=>{
     res.json(await Post.find() 
                         .populate('author', ['username']) // go look for the author-user by the reference and add the username & id to the "author" field in the object array
                         .sort({createdAt: -1})
