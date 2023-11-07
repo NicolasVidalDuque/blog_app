@@ -6,9 +6,10 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const multer = require('multer');
-const uploadMiddleware = multer({ dest: 'uploads/'})
+const uploadMiddleware = multer({ dest: 'uploads/'});
 const fs = require('fs');
-const cors = require('cors') 
+const cors = require('cors');
+const {uploadFile} = require('./s3');
 
 require('dotenv').config();
 const app = express();
@@ -108,7 +109,8 @@ app.post('/logout', (req, res) =>{
 // Note that the files argument depends on the name of the input specified in formData.
 app.post('/post',uploadMiddleware.single('file'), async (req, res) => {
     const {originalname, path} = req.file;
-    console.log(originalname)
+    const result = await uploadFile(req.file);
+    const imgKey = result.key;
     const parts = originalname.split('.');
     const ext = parts[parts.length -1];
     const newPath = path+'.'+ext;
