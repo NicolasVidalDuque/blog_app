@@ -9,7 +9,8 @@ const multer = require('multer');
 const fs = require('fs');
 const cors = require('cors');
 const { s3 } = require('./s3');
-const {PutObjectCommand} = require('@aws-sdk/client-s3');
+const {PutObjectCommand, GetObjectCommand} = require('@aws-sdk/client-s3');
+const {getSignedUrl} = require('@aws-sdk/s3-request-presigner');
 
 require('dotenv').config();
 const app = express();
@@ -141,8 +142,7 @@ app.post('/post',uploadMiddleware.single('file'), async (req, res) => {
 });
 
 app.get('/s3/:key', (req, res) => {
-  const key = req.params.key;
-
+  
 })
 
 app.get('/allPost', async (req, res)=>{
@@ -152,6 +152,17 @@ app.get('/allPost', async (req, res)=>{
                         .limit(20)
                         ).status(200);
 });
+
+app.get('/getImageUrl/:path', async (req, res) => {
+  const key = req.params.path;
+  const getObjectsParams = {
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key:key,
+  }
+  const command = new GetObjectCommand(getObjectsParams);
+  const url = await getSignedUrl(s3, command, {expiresIn: 3600});
+  res.json(url).status(200);
+})
 
 app.get('/post/:id', async (req, res) => {
     const {id} = req.params;
