@@ -36,7 +36,6 @@ export default function CreatePost(){
         data.set('content', content);
         // Asume that file is allwais not null, verification in the pervious if
         data.set('file', files[0]);
-        console.log(files[0])
 
         // Send to server for storage in db:
         //      form-data: title, content, summary, image

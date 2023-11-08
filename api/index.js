@@ -6,10 +6,10 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const multer = require('multer');
-const uploadMiddleware = multer({ dest: 'uploads/'});
 const fs = require('fs');
 const cors = require('cors');
-const {uploadFile} = require('./s3');
+const { s3 } = require('./s3');
+const {PutObjectCommand} = require('@aws-sdk/client-s3');
 
 require('dotenv').config();
 const app = express();
@@ -17,6 +17,9 @@ const db = process.env.DB_CONNECTION;
 
 const salt = bcrypt.genSaltSync(10);
 const secret = process.env.SECRET_KEY; 
+
+const storage = multer.memoryStorage();
+const uploadMiddleware = multer({storage: storage});
 
 // app.use -> function adds a new middleware to the app. Essentially, whenever a request hits 
 // your backend, Express will execute the functions you passed to app.use()
@@ -108,28 +111,39 @@ app.post('/logout', (req, res) =>{
 // To handle multiple files, use upload.array. For a single file, use upload.single.
 // Note that the files argument depends on the name of the input specified in formData.
 app.post('/post',uploadMiddleware.single('file'), async (req, res) => {
-    const {originalname, path} = req.file;
-    const result = await uploadFile(req.file);
-    const imgKey = result.key;
-    const parts = originalname.split('.');
-    const ext = parts[parts.length -1];
-    const newPath = path+'.'+ext;
-    fs.renameSync(path, newPath);
+    const ogName = req.file.originalname.split('.');
+    const key = `${ogName[0]}_${new Date().getTime()}.png`;
+    const file = req.file.buffer;
+    const type = req.file.mimetype;
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: key,
+      Body: file, 
+      ContentType:type,
+    }
+    const command = new PutObjectCommand(params);
+    await s3.send(command);
+    
     const { token } = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
-		if (err) throw err;
-		const { title, summary, content } = req.body;
-		await Post.create({
-		    title,
-		    summary,
-		    content,
-		    author:info.id,
-		    cover:newPath
-		})
-		res.json('ok').status(200);
-	});
+		  if (err) throw err;
+		  const { title, summary, content } = req.body;
+		  await Post.create({
+		      title,
+		      summary,
+		      content,
+		      author:info.id,
+		      cover:key
+		  })
+		  res.json('ok').status(200);
+	  });
 
 });
+
+app.get('/s3/:key', (req, res) => {
+  const key = req.params.key;
+
+})
 
 app.get('/allPost', async (req, res)=>{
     res.json(await Post.find() 

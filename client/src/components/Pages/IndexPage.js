@@ -7,10 +7,11 @@ export default function IndexPage(){
     const [posts, setPosts] = useState([]);
     const [focusPost, setFocusPost] = useState(false);
     const [idRoute, setIdRoute] = useState('');
+    const [foto, setfoto] = useState();
     const redirect = (_id) => {
 		  setFocusPost(true);
       setIdRoute(_id);
-	}
+	  }
  
     useEffect(() => {
       fetch(HOST + '/allPost').then(response => {
@@ -19,7 +20,7 @@ export default function IndexPage(){
             })
         })
     }, [])
-
+  
     return focusPost ? (
         <Navigate to={`/post/${idRoute}`} />
     ) : (
