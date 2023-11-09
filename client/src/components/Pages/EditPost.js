@@ -9,7 +9,6 @@ export default function EditPost(){
     const [files, setFiles] = useState("");
     const [redirect, setRedirect] = useState(false);
     const {id} = useParams();
-    const [cover, setCover] = useState('');
 
     useEffect(() => {
         fetch(HOST + '/post/'+id)
@@ -40,7 +39,7 @@ export default function EditPost(){
     }
 
     if (redirect) {
-		return <Navigate to={"/post/"+id} />;
+		return <Navigate to={"/"}/>;
 	}
     return (
 		<form id="create-form" onSubmit={updatePost}>

@@ -9,7 +9,7 @@ const multer = require('multer');
 const fs = require('fs');
 const cors = require('cors');
 const { s3 } = require('./s3');
-const {PutObjectCommand, GetObjectCommand} = require('@aws-sdk/client-s3');
+const {PutObjectCommand, GetObjectCommand, DeleteObjectCommand} = require('@aws-sdk/client-s3');
 const {getSignedUrl} = require('@aws-sdk/s3-request-presigner');
 
 require('dotenv').config();
@@ -113,7 +113,7 @@ app.post('/logout', (req, res) =>{
 // Note that the files argument depends on the name of the input specified in formData.
 app.post('/post',uploadMiddleware.single('file'), async (req, res) => {
     const ogName = req.file.originalname.split('.');
-    const key = `${ogName[0]}_${new Date().getTime()}.png`;
+    const key = `${ogName[0]}_${new Date().getTime()}.${ogName[ogName.length - 1]}`;
     const file = req.file.buffer;
     const type = req.file.mimetype;
     const params = {
@@ -171,39 +171,52 @@ app.get('/post/:id', async (req, res) => {
 })
 
 app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
-    let newPath = null;
-    
-    if (req.file){
-        const { originalname, path } = req.file;
-        const parts = originalname.split(".");
-        const ext = parts[parts.length - 1];
-        newPath = path + "." + ext;
-        fs.renameSync(path, newPath);
+  //Update Image
+  // Delete current object from s3 Bucket
+
+  // update body of post (except image)
+  const { token } = req.cookies;
+  jwt.verify(token, secret, {}, async (err, info) => {
+    if (err) throw err;
+    const {id, title, summary, content } = req.body;
+    const postDoc = await Post.findById(id);
+    if (JSON.stringify(postDoc.author) !== JSON.stringify(info.id)){
+      return res.status(400).json('Not the corresponding author');
     }
+    let key = '';
+    if(req.file){
+      // if file changes, delete the current one in s3 bucket
+      const ogName = postDoc.cover;
+      const params = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: ogName,
+      }
+      const command = new DeleteObjectCommand(params);
+      await s3.send(command);
 
-    const { token } = req.cookies;
-    jwt.verify(token, secret, {}, async (err, info) => {
-		if (err) throw err;
-        const {id, title, summary, content } = req.body;
-        const postDoc = await Post.findById(id);
-        if (JSON.stringify(postDoc.author) !== JSON.stringify(info.id)){
-            return res.status(400).json('Not the corresponding author');
-        }
-        await postDoc.updateOne({
-            title, summary, content,
-            cover:newPath ? newPath : postDoc.cover
-        });
-        // await Post.create({
-		// 	title,
-		// 	summary,
-		// 	content,
-		// 	author: info.id,
-		// 	cover: newPath,
-		// });
-		res.json( postDoc).status(200);
-	});
+      // upload new file to s3 bucket
+      const newName = req.file.originalname.split('.');
+      key = `${newName[0]}_${new Date().getTime()}.${newName[newName.length-1]}}`;
+      const newFile = req.file.buffer;
+      const type = req.file.mimetype;
+      const updateParams = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: key,
+        Body: newFile,
+        ContentType: type,
+      };
+      const updateCommand = new PutObjectCommand(updateParams);
+      await s3.send(updateCommand);
+    }
+    // update post information on mongodb
+    await postDoc.updateOne({
+      title, summary, content,
+      cover: req.file ? key : postDoc.cover
+    });
+    res.json( postDoc).status(200);
+  });
 
-    
+
 })
 
 app.get('/test', (req, res) =>{

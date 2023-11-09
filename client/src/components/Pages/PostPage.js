@@ -8,15 +8,22 @@ export default function PostPage(){
     const {id} = useParams();
     const [postInfo, setPostInfo] = useState(null);
     const {userInfo, imagePaths} = useContext(UserContex);
+    const [signedLink, setSignedLink] = useState('');
+
     useEffect(() => {
+        console.log('useEffect')
         fetch(HOST + '/post/'+id)
             .then(response => {
                 response.json().then(postInfo => {
                     setPostInfo(postInfo);
+                    setSignedLink(imagePaths[id]);
                 })
             })
+      console.log({signedLink});
     }, [])
+
     if(!postInfo) return '';
+
     return (
 		<div className="post-page">
 			<div className="center-elements">
@@ -47,7 +54,7 @@ export default function PostPage(){
 			<div className="image">
 				<img
 					className="image"
-					src={imagePaths[id]}
+					src={signedLink}
 				/>
 			</div>
 			<div dangerouslySetInnerHTML={{ __html: postInfo.content }} />
