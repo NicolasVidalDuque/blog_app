@@ -141,10 +141,6 @@ app.post('/post',uploadMiddleware.single('file'), async (req, res) => {
 
 });
 
-app.get('/s3/:key', (req, res) => {
-  
-})
-
 app.get('/allPost', async (req, res)=>{
     res.json(await Post.find() 
                         .populate('author', ['username']) // go look for the author-user by the reference and add the username & id to the "author" field in the object array
@@ -215,8 +211,35 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
     });
     res.json( postDoc).status(200);
   });
+})
 
+app.delete('/delete/:id',(req, res) => {
+  const {id} = req.params;
+  const { token } = req.cookies;
+  jwt.verify(token, secret, {}, async (err, info) => {
+    if (err) throw err;
+    const postDoc = await Post.findById(id);
+    if (JSON.stringify(postDoc.author) !== JSON.stringify(info.id)){
+      return res.status(400).json('Not the corresponding author');
+    }
+    // Delete image from s3 bucket by the key stored in the cover attribute from post object
+    const ogName = postDoc.cover;
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: ogName,
+    }
+    const command = new DeleteObjectCommand(params);
+    await s3.send(command);
 
+    // Delete from mongodb by the post id 
+    const deleted = await Post.findByIdAndDelete(id);
+    console.log({deleted})
+    if(deleted){
+      res.status(200).json('Deleted post');
+    }else{
+      res.status(404).json('Post not found')
+    }
+  })
 })
 
 app.get('/test', (req, res) =>{

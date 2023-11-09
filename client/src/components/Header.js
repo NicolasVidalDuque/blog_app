@@ -1,10 +1,11 @@
 import { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { UserContex } from "../context/UserContext";
-import { Navigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { HOST } from "../host.js"
 export default function Header() {
 	const {setUserInfo, userInfo} = useContext(UserContex);
+  const navigate = useNavigate();
 	useEffect(() => {
 		fetch(HOST + "/profile", {
 			credentials: 'include',
@@ -15,14 +16,14 @@ export default function Header() {
 		});
 	}, []);
 
-	function logout(){
-		fetch(HOST + '/logout', {
+	async function logout(){
+		await fetch(HOST + '/logout', {
 			credentials: 'include',
 			method: 'POST'
 		})
 		setUserInfo(null);
-    alert("Bye Bye...")
-    return <Navigate to={'/'} /> 
+    alert("Bye Bye...");
+    navigate('/');
 	}
 
 	const username = userInfo?.username

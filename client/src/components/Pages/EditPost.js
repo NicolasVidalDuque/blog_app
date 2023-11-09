@@ -38,6 +38,15 @@ export default function EditPost(){
         setRedirect(true);
     }
 
+    async function deleteCurrentPost(ev){
+      ev.preventDefault();
+      await fetch(HOST + '/delete/' + id,{
+        credentials: 'include',
+        method: 'DELETE',
+      })
+      setRedirect(true);
+    }
+
     if (redirect) {
 		return <Navigate to={"/"}/>;
 	}
@@ -66,6 +75,12 @@ export default function EditPost(){
 				style={{ marginTop: "10px" }}
 				type="submit">
 				Update post
+			</button>
+      <button
+				style={{ marginTop: "10px" }}
+				type="button"
+        onClick={deleteCurrentPost} >
+        Delete Post
 			</button>
 		</form>
 	);
