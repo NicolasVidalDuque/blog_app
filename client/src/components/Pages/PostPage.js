@@ -7,7 +7,7 @@ export default function PostPage(){
     // These are defined on the Route (from App.js) by the "colon" -> :id
     const {id} = useParams();
     const [postInfo, setPostInfo] = useState(null);
-    const {userInfo} = useContext(UserContex);
+    const {userInfo, imagePaths} = useContext(UserContex);
     useEffect(() => {
         fetch(HOST + '/post/'+id)
             .then(response => {
@@ -47,7 +47,7 @@ export default function PostPage(){
 			<div className="image">
 				<img
 					className="image"
-					src={HOST + '/' + postInfo.cover}
+					src={imagePaths[id]}
 				/>
 			</div>
 			<div dangerouslySetInnerHTML={{ __html: postInfo.content }} />
