@@ -11,19 +11,6 @@ export default function CreatePost(){
     const [files, setFiles] = useState('');
     const [redirect, setRedirect] = useState(false);
 
-    function convert_to_base64(file){
-      return new Promise((resolve, reject) => {
-        const fileReader = new FileReader();
-        fileReader.readAsDataURL(file);
-        fileReader.onload = () => {
-          resolve(fileReader.result)
-        };
-        fileReader.onerror = (error) => {
-          reject(error);
-        };
-      })
-    }
-
     async function createNewPost(ev){
         ev.preventDefault();
         if(title.length < 1 || summary.length < 1 || content.length < 1 || files.length < 1){

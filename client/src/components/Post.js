@@ -1,11 +1,11 @@
-import {HOST} from "../host.js"
 export default function Post(props){
-    const {_id, title, summary, cover,  createdAt, author} = props.post;
+    const {_id, title, summary,  createdAt, author} = props.post;
+    const {imgPath} = props;
     return (
         <div className="post" onClick={() => props.redirect(_id)}>
             <div className="image">
                 <img
-                src={HOST + '/' + cover}
+                src={imgPath}
                 alt={title}
                 />
             </div>
